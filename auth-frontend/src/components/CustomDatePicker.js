@@ -1,4 +1,3 @@
-// components/CustomDatePicker.js
 import React from "react";
 import TextField from "@mui/material/TextField";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -10,8 +9,8 @@ const CustomDatePicker = ({ name, label, value, onChange }) => {
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DatePicker
         label={label}
-        value={value}
-        onChange={(date) => onChange(date)}
+        value={value || null}  // Ensure value is either a Date object or null
+        onChange={(date) => onChange(date)}  // Ensure onChange updates parent state
         renderInput={(params) => <TextField {...params} name={name} />}
       />
     </LocalizationProvider>

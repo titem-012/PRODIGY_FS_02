@@ -22,21 +22,30 @@ const ForgotPassword = () => {
     setError(null); // Reset error
     setSuccess(false); // Reset success
 
+    // Check if new password and confirm password match
     if (newPassword !== confirmNewPassword) {
       setError("New password and confirmation do not match.");
       return;
     }
 
     try {
-      // API request to change the password
-
+      // Example: API request to change the password
+      // Replace this with an actual API call to reset the password
+      // const response = await axios.post('/api/auth/reset-password', { currentPassword, newPassword });
+      
+      // Simulate success
       setSuccess("Password changed successfully!");
+
+      // Clear the form fields
       setCurrentPassword("");
       setNewPassword("");
       setConfirmNewPassword("");
-      setTimeout(() => navigate("/login"), 3000); // Redirect after success
+
+      // Redirect to login page after 3 seconds
+      setTimeout(() => navigate("/login"), 3000);
     } catch (error) {
-      setError(error.response?.data?.message || "Password change failed.");
+      // Handle errors from API request
+      setError(error?.response?.data?.message || "Password change failed.");
     }
   };
 
@@ -57,16 +66,22 @@ const ForgotPassword = () => {
         <Typography component="h1" variant="h5">
           Reset Password
         </Typography>
+
+        {/* Show error alert if there's any */}
         {error && (
           <Alert severity="error" sx={{ mt: 2, width: "100%" }}>
             {error}
           </Alert>
         )}
+
+        {/* Show success alert if the password is successfully changed */}
         {success && (
           <Alert severity="success" sx={{ mt: 2, width: "100%" }}>
             {success}
           </Alert>
         )}
+
+        {/* Form to handle password reset */}
         <Box
           component="form"
           onSubmit={handleSubmit}
@@ -87,6 +102,7 @@ const ForgotPassword = () => {
             onChange={(e) => setCurrentPassword(e.target.value)}
             sx={{ mb: 2 }}
           />
+
           <TextField
             variant="outlined"
             margin="normal"
@@ -101,6 +117,7 @@ const ForgotPassword = () => {
             onChange={(e) => setNewPassword(e.target.value)}
             sx={{ mb: 2 }}
           />
+
           <TextField
             variant="outlined"
             margin="normal"
@@ -114,6 +131,7 @@ const ForgotPassword = () => {
             onChange={(e) => setConfirmNewPassword(e.target.value)}
             sx={{ mb: 2 }}
           />
+
           <Button
             type="submit"
             fullWidth

@@ -10,8 +10,8 @@ import {
   Link as MuiLink,
 } from "@mui/material";
 import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext.js";
-import axios from "../api/axiosConfig.js";
+import { useAuth } from "../context/AuthContext";  // Ensure this is correctly imported
+import axios from "../api/axiosConfig";  // Ensure axiosConfig is correctly set up
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -23,12 +23,24 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null); // Reset error before submission
+
     try {
-      const response = await axios.post("login", { email: username, password });
-      login(response.data.access, response.data.refresh);
-      navigate("/dashboard");
-    } catch (error) {
-      setError(error); // Capture the entire error object
+      const response = await axios.post("/login", {  // Ensure correct endpoint
+        email: username,  // Assuming you're sending the email as username
+        password,
+      });
+
+      // Assuming the response contains tokens and using them for login
+      if (response.data.access && response.data.refresh) {
+        login(response.data.access, response.data.refresh);  // Ensure the login function is correctly implemented in context
+        navigate("/dashboard");
+      } else {
+        setError({ message: "Invalid response from server" });
+      }
+    } catch (err) {
+      setError({
+        message: err.response?.data?.message || err.message || "An error occurred",
+      });
     }
   };
 
@@ -52,10 +64,7 @@ const Login = () => {
         {error && (
           <Alert severity="error" sx={{ mt: 2, width: "100%" }}>
             <AlertTitle>Error</AlertTitle>
-            {error.response?.data?.message ||
-              error.message ||
-              "An error occurred"}{" "}
-            {/* Safely render error message */}
+            {error.message}  {/* Use error.message instead of error response */}
           </Alert>
         )}
         <Box
@@ -70,7 +79,7 @@ const Login = () => {
             required
             fullWidth
             id="username"
-            label="Username"
+            label="Username (Email)"
             name="username"
             autoComplete="username"
             autoFocus

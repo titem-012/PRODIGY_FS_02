@@ -6,6 +6,7 @@ import {
   Button,
   Typography,
   Alert,
+  CircularProgress,
 } from "@mui/material";
 import axios from "axios";
 
@@ -14,21 +15,35 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false); // Loading state
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate input
+    if (!email || !password) {
+      setError("Email and Password are required");
+      return;
+    }
+
     setError(null); // Reset error before submission
     setSuccess(false); // Reset success message
+    setLoading(true); // Set loading to true
+
     try {
-      await axios.post("http://localhost:5000/api/register", {
+      const response = await axios.post("http://localhost:5000/api/register", {
         email,
         password,
       });
+
       setSuccess(true);
       setEmail("");
       setPassword("");
     } catch (error) {
       setError(error.response?.data?.message || "Registration failed");
+    } finally {
+      setLoading(false); // Set loading to false after request
     }
   };
 
@@ -50,16 +65,19 @@ const Register = () => {
         <Typography component="h1" variant="h5" sx={{ mb: 2 }}>
           Register
         </Typography>
+
         {error && (
           <Alert severity="error" sx={{ mb: 2 }}>
             {error}
           </Alert>
         )}
+
         {success && (
           <Alert severity="success" sx={{ mb: 2 }}>
             Registered successfully!
           </Alert>
         )}
+
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
             variant="outlined"
@@ -89,15 +107,21 @@ const Register = () => {
             onChange={(e) => setPassword(e.target.value)}
             sx={{ mb: 2 }}
           />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            sx={{ mt: 2 }}
-          >
-            Register
-          </Button>
+          
+          {/* Loading Spinner */}
+          {loading ? (
+            <CircularProgress sx={{ margin: "20px auto" }} />
+          ) : (
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              sx={{ mt: 2 }}
+            >
+              Register
+            </Button>
+          )}
         </Box>
       </Box>
     </Container>

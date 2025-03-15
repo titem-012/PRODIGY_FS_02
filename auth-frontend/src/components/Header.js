@@ -9,7 +9,7 @@ const Header = () => {
   return (
     <AppBar position="static">
       <Toolbar>
-        {isAuthenticated ? (
+        {isAuthenticated ?   (
           <Button color="inherit" component={Link} to="/dashboard">
             Dashboard
           </Button>

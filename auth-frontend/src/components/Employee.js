@@ -18,7 +18,8 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
-export const Employee = () => {
+// Ensure only one default export, and remove any other potential conflicting exports
+const Employee = () => {
   const [rows, setRows] = useState([]);
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("firstName");
@@ -31,6 +32,7 @@ export const Employee = () => {
     dateOfJoining: null,
   });
 
+  // Fetch Employees from API
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
@@ -45,12 +47,14 @@ export const Employee = () => {
     fetchEmployees();
   }, []);
 
+  // Handle Sorting
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
   };
 
+  // Open Dialog for Adding or Editing Employee
   const handleClickOpen = (employee = null) => {
     if (employee) {
       setNewEmployee({
@@ -71,6 +75,7 @@ export const Employee = () => {
     setOpen(true);
   };
 
+  // Close Dialog
   const handleClose = () => {
     setOpen(false);
     setNewEmployee({
@@ -82,6 +87,7 @@ export const Employee = () => {
     });
   };
 
+  // Handle Form Input Change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewEmployee({
@@ -90,6 +96,7 @@ export const Employee = () => {
     });
   };
 
+  // Handle Date Change
   const handleDateChange = (date) => {
     setNewEmployee({
       ...newEmployee,
@@ -97,8 +104,10 @@ export const Employee = () => {
     });
   };
 
+  // Add or Update Employee
   const handleAddEmployee = async () => {
     if (newEmployee._id) {
+      // Update Employee
       try {
         const response = await fetch(
           `http://localhost:5000/api/employees/${newEmployee._id}`,
@@ -125,6 +134,7 @@ export const Employee = () => {
         console.error("Error:", error);
       }
     } else {
+      // Add New Employee
       try {
         const response = await fetch("http://localhost:5000/api/employees", {
           method: "POST",
@@ -147,6 +157,7 @@ export const Employee = () => {
     handleClose();
   };
 
+  // Delete Employee
   const handleDeleteClick = async (_id) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this employee?"
@@ -179,11 +190,7 @@ export const Employee = () => {
         </Button>
       </Box>
       <TableContainer component={Paper}>
-        <Table
-          sx={{ minWidth: 750 }}
-          aria-labelledby="tableTitle"
-          size="medium"
-        >
+        <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size="medium">
           <TableHead>
             <TableRow>
               {["firstName", "lastName", "hourlyRate", "dateOfJoining"].map(
@@ -209,7 +216,7 @@ export const Employee = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row, index) => (
+            {rows.map((row) => (
               <TableRow hover key={row._id}>
                 <TableCell align="center">{row.firstName}</TableCell>
                 <TableCell align="center">{row.lastName}</TableCell>
@@ -246,6 +253,7 @@ export const Employee = () => {
         </Table>
       </TableContainer>
 
+      {/* Dialog for Adding/Editing Employee */}
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>
           {newEmployee._id ? "Edit Employee" : "Add Employee"}
@@ -301,3 +309,6 @@ export const Employee = () => {
     </Box>
   );
 };
+
+// Ensure this is the only default export
+export default Employee;
